@@ -1,0 +1,12 @@
+[package]
+name = "learn_zenoh"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+zenoh = { git = "https://github.com/eclipse-zenoh/zenoh.git" }
+tokio = { version = "1", features = ["rt-multi-thread", "time", "macros"] }
+env_logger = "0.9"
+log = "0.4"
