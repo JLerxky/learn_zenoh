@@ -13,6 +13,11 @@ pub async fn start() {
     config.set_local_routing(Some(false)).unwrap();
 
     config
+        .connect
+        .endpoints
+        .push("tcp/jler.vip:7447".parse().unwrap());
+
+    config
         .listen
         .endpoints
         .push("tcp/0.0.0.0:7447".parse().unwrap());
@@ -24,7 +29,7 @@ pub async fn start() {
 
     let mut subscriber = session.subscribe("/resource/name").await.unwrap();
     let mut i = 0;
-
+    let mut sender_interval = tokio::time::interval(tokio::time::Duration::from_millis(618));
     loop {
         tokio::select! {
             sample = subscriber.receiver().recv_async() => if let Ok(sample) = sample {
@@ -34,8 +39,8 @@ pub async fn start() {
                     &msg
                 );
             },
-            _ = tokio::time::sleep(std::time::Duration::from_millis(1000)) => {
-                session.put(expr_id, format!("peer1: {}", i)).await.unwrap();
+            _ = sender_interval.tick() => {
+                session.put(expr_id, format!("hello: {}", i)).await.unwrap();
             },
         };
         i += 1;
